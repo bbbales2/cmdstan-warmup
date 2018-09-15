@@ -3,6 +3,7 @@
 
 #include <cmdstan/arguments/categorical_argument.hpp>
 #include <cmdstan/arguments/arg_adapt_engaged.hpp>
+#include <cmdstan/arguments/arg_adapt_experimental.hpp>
 #include <cmdstan/arguments/arg_adapt_gamma.hpp>
 #include <cmdstan/arguments/arg_adapt_delta.hpp>
 #include <cmdstan/arguments/arg_adapt_kappa.hpp>
@@ -19,6 +20,7 @@ namespace cmdstan {
       _description = "Warmup Adaptation";
 
       _subarguments.push_back(new arg_adapt_engaged());
+      _subarguments.push_back(new arg_adapt_experimental());
       _subarguments.push_back(new arg_adapt_gamma());
       _subarguments.push_back(new arg_adapt_delta());
       _subarguments.push_back(new arg_adapt_kappa());
