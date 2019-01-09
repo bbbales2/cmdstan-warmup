@@ -300,7 +300,7 @@ namespace cmdstan {
           unsigned int term_buffer = dynamic_cast<u_int_argument*>(adapt->arg("term_buffer"))->value();
           unsigned int window = dynamic_cast<u_int_argument*>(adapt->arg("window"))->value();
           return_code = stan::services::sample::hmc_nuts_dense_e_adapt_experimental(model,
-                                                                       init_context,
+                                                                       *init_context,
                                                                        random_seed,
                                                                        id,
                                                                        init_radius,
@@ -336,7 +336,7 @@ namespace cmdstan {
           unsigned int term_buffer = dynamic_cast<u_int_argument*>(adapt->arg("term_buffer"))->value();
           unsigned int window = dynamic_cast<u_int_argument*>(adapt->arg("window"))->value();
           return_code = stan::services::sample::hmc_nuts_diag_e_adapt_experimental(model,
-                                                                      init_context,
+                                                                                   *init_context,
                                                                       random_seed,
                                                                       id,
                                                                       init_radius,
