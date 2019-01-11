@@ -5,18 +5,21 @@
 
 namespace cmdstan {
 
-  class arg_adapt_experimental: public bool_argument {
+  class arg_adapt_experimental: public int_argument {
   public:
-    arg_adapt_experimental(): bool_argument() {
+    arg_adapt_experimental(): int_argument() {
       _name = "experimental";
-      _description = "Use experimental adaptation?";
-      _validity = "[0, 1]";
+      _description = "Number of Lanczos vectors to adapt";
+      _validity = "0 <= experimental";
       _default = "0";
-      _default_value = false;
-      _constrained = false;
+      _default_value = 0;
+      _constrained = true;
       _good_value = 1;
+      _bad_value = -1;
       _value = _default_value;
     }
+
+    bool is_valid(int value) { return value >= 0; }
   };
 
 }
