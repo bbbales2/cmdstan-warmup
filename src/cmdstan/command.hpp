@@ -252,7 +252,7 @@ namespace cmdstan {
       list_argument* algo = dynamic_cast<list_argument*>(parser.arg("method")->arg("sample")->arg("algorithm"));
       categorical_argument* adapt = dynamic_cast<categorical_argument*>(parser.arg("method")->arg("sample")->arg("adapt"));
       bool adapt_engaged = dynamic_cast<bool_argument*>(adapt->arg("engaged"))->value();
-      int adapt_experimental = dynamic_cast<int_argument*>(adapt->arg("experimental"))->value();
+      bool adapt_experimental = dynamic_cast<bool_argument*>(adapt->arg("experimental"))->value();
 
       if (model.num_params_r() == 0 && algo->value() != "fixed_param") {
         info("Must use algorithm=fixed_param for model that has no parameters.");
@@ -288,8 +288,11 @@ namespace cmdstan {
         if (adapt_engaged == true && num_warmup == 0) {
           info("The number of warmup samples (num_warmup) must be greater than zero if adaptation is enabled.");
           return_code = stan::services::error_codes::CONFIG;
-        } else if (engine->value() == "nuts" && adapt_experimental > 0) {
+        } else if (engine->value() == "nuts" && adapt_experimental) {
 	  info("adapt_experimental selected");
+	  int lanczos_iterations = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("lanczos_iterations"))->value();
+	  int approximation_rank = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("approximation_rank"))->value();
+	  bool endpoint_only = dynamic_cast<bool_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("endpoint_only"))->value();
           int max_depth = dynamic_cast<int_argument*>(dynamic_cast<categorical_argument*>(algo->arg("hmc")->arg("engine")->arg("nuts"))->arg("max_depth"))->value();
           double delta = dynamic_cast<real_argument*>(adapt->arg("delta"))->value();
           double gamma = dynamic_cast<real_argument*>(adapt->arg("gamma"))->value();
@@ -318,7 +321,9 @@ namespace cmdstan {
 										    init_buffer,
 										    term_buffer,
 										    window,
-										    adapt_experimental,
+										    lanczos_iterations,
+										    approximation_rank,
+										    endpoint_only,
 										    interrupt,
 										    logger,
 										    init_writer,
