@@ -27,6 +27,7 @@
 #include <stan/services/sample/hmc_nuts_dense_e_adapt_experimental.hpp>
 #include <stan/services/sample/hmc_nuts_diag_e.hpp>
 #include <stan/services/sample/hmc_nuts_diag_e_adapt.hpp>
+#include <stan/services/sample/hmc_nuts_diag_e_adapt_experimental.hpp>
 #include <stan/services/sample/hmc_nuts_unit_e.hpp>
 #include <stan/services/sample/hmc_nuts_unit_e_adapt.hpp>
 #include <stan/services/sample/hmc_static_dense_e.hpp>
@@ -288,11 +289,9 @@ namespace cmdstan {
         if (adapt_engaged == true && num_warmup == 0) {
           info("The number of warmup samples (num_warmup) must be greater than zero if adaptation is enabled.");
           return_code = stan::services::error_codes::CONFIG;
-        } else if (engine->value() == "nuts" && adapt_experimental) {
+        } else if (engine->value() == "nuts" && metric->value() == "dense_e" && adapt_experimental == true) {
 	  info("adapt_experimental selected");
-	  int lanczos_iterations = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("lanczos_iterations"))->value();
 	  int approximation_rank = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("approximation_rank"))->value();
-	  bool endpoint_only = dynamic_cast<bool_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("endpoint_only"))->value();
           int max_depth = dynamic_cast<int_argument*>(dynamic_cast<categorical_argument*>(algo->arg("hmc")->arg("engine")->arg("nuts"))->arg("max_depth"))->value();
           double delta = dynamic_cast<real_argument*>(adapt->arg("delta"))->value();
           double gamma = dynamic_cast<real_argument*>(adapt->arg("gamma"))->value();
@@ -321,14 +320,50 @@ namespace cmdstan {
 										    init_buffer,
 										    term_buffer,
 										    window,
-										    lanczos_iterations,
 										    approximation_rank,
-										    endpoint_only,
 										    interrupt,
 										    logger,
 										    init_writer,
 										    sample_writer,
 										    diagnostic_writer);
+        } else if (engine->value() == "nuts" && metric->value() == "diag_e" && adapt_experimental == true) {
+	  info("adapt_experimental selected");
+	  int approximation_rank = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("approximation_rank"))->value();
+          categorical_argument* base = dynamic_cast<categorical_argument*>(algo->arg("hmc")->arg("engine")->arg("nuts"));
+          int max_depth = dynamic_cast<int_argument*>(base->arg("max_depth"))->value();
+          double delta = dynamic_cast<real_argument*>(adapt->arg("delta"))->value();
+          double gamma = dynamic_cast<real_argument*>(adapt->arg("gamma"))->value();
+          double kappa = dynamic_cast<real_argument*>(adapt->arg("kappa"))->value();
+          double t0 = dynamic_cast<real_argument*>(adapt->arg("t0"))->value();
+          unsigned int init_buffer = dynamic_cast<u_int_argument*>(adapt->arg("init_buffer"))->value();
+          unsigned int term_buffer = dynamic_cast<u_int_argument*>(adapt->arg("term_buffer"))->value();
+          unsigned int window = dynamic_cast<u_int_argument*>(adapt->arg("window"))->value();
+          return_code = stan::services::sample::hmc_nuts_diag_e_adapt_experimental(model,
+										   *init_context,
+										   random_seed,
+										   id,
+										   init_radius,
+										   num_warmup,
+										   num_samples,
+										   num_thin,
+										   save_warmup,
+										   refresh,
+										   stepsize,
+										   stepsize_jitter,
+										   max_depth,
+										   delta,
+										   gamma,
+										   kappa,
+										   t0,
+										   init_buffer,
+										   term_buffer,
+										   window,
+										   approximation_rank,
+										   interrupt,
+										   logger,
+										   init_writer,
+										   sample_writer,
+										   diagnostic_writer);
 	} else if (engine->value() == "nuts" && metric->value() == "dense_e" && adapt_engaged == false && metric_supplied == false) {
           int max_depth = dynamic_cast<int_argument*>(dynamic_cast<categorical_argument*>(algo->arg("hmc")->arg("engine")->arg("nuts"))->arg("max_depth"))->value();
           return_code = stan::services::sample::hmc_nuts_dense_e(model,
