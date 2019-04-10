@@ -291,7 +291,7 @@ namespace cmdstan {
           return_code = stan::services::error_codes::CONFIG;
         } else if (engine->value() == "nuts" && metric->value() == "dense_e" && adapt_experimental == true) {
 	  info("adapt_experimental selected");
-	  int approximation_rank = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("approximation_rank"))->value();
+	  int which_adaptation = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("which_adaptation"))->value();
           int max_depth = dynamic_cast<int_argument*>(dynamic_cast<categorical_argument*>(algo->arg("hmc")->arg("engine")->arg("nuts"))->arg("max_depth"))->value();
           double delta = dynamic_cast<real_argument*>(adapt->arg("delta"))->value();
           double gamma = dynamic_cast<real_argument*>(adapt->arg("gamma"))->value();
@@ -320,7 +320,7 @@ namespace cmdstan {
 										    init_buffer,
 										    term_buffer,
 										    window,
-										    approximation_rank,
+										    which_adaptation,
 										    interrupt,
 										    logger,
 										    init_writer,
@@ -328,7 +328,7 @@ namespace cmdstan {
 										    diagnostic_writer);
         } else if (engine->value() == "nuts" && metric->value() == "diag_e" && adapt_experimental == true) {
 	  info("adapt_experimental selected");
-	  int approximation_rank = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("approximation_rank"))->value();
+	  int which_adaptation = dynamic_cast<u_int_argument*>(parser.arg("method")->arg("sample")->arg("adapt")->arg("which_adaptation"))->value();
           categorical_argument* base = dynamic_cast<categorical_argument*>(algo->arg("hmc")->arg("engine")->arg("nuts"));
           int max_depth = dynamic_cast<int_argument*>(base->arg("max_depth"))->value();
           double delta = dynamic_cast<real_argument*>(adapt->arg("delta"))->value();
@@ -358,7 +358,7 @@ namespace cmdstan {
 										   init_buffer,
 										   term_buffer,
 										   window,
-										   approximation_rank,
+										   which_adaptation,
 										   interrupt,
 										   logger,
 										   init_writer,
