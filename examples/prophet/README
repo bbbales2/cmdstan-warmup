@@ -1,0 +1,59 @@
+The data for this model was obtained with cranlogs. It represents the prophet model given below. Data was prepared for cmdstan using a modified version of prophet.
+
+```
+library(tidyverse)
+library(prophet)
+library(cranlogs)
+
+downloads <- as.tibble(cran_downloads(package = c("rstan"),
+                                      from = "2015-10-01",
+                                      to = "2019-01-16")) %>%
+  mutate(ds=as.Date(date, format = '%Y-%m-%d'), y=count) %>%
+  filter(y>0)
+
+releases <- as.tibble(available.versions("rstan")$rstan) %>%
+  mutate(lower_window=0, upper_window=7) %>%
+  mutate(holiday="release", ds=as.Date(date, format = '%Y-%m-%d'))
+
+m <- prophet(downloads, holidays = releases, cores=4)
+```
+
+The prophet model itself comes from https://github.com/facebook/prophet/blob/master/R/inst/stan/prophet.stan. The license for this code is included in the file 'PROPHET_LICENSE'.
+
+To run this code, navigate to the root cmdstan directory. Build the model with:
+
+```
+make examples/prophet/prophet
+```
+
+Run it with the new adaptation using:
+
+```
+examples/prophet/prophet sample adapt experimental=1 which_adaptation=0 delta=0.8 algorithm=hmc metric=dense_e init=examples/prophet/prophet.init data file=examples/prophet/prophet.dat
+```
+
+The 'which_adaptation' argument can be used to force different adaptations. The available options are given on running with the switching adaptation (the numbers marked 'which'):
+
+```
+adapt: 249, which: 1, min: 22.8234, median: 23.6361, max: 23.9078, dense
+adapt: 249, which: 2, min: 274.77, median: 284.555, max: 287.823, diagonal
+adapt: 249, which: 3, min: 55.7662, median: 57.7515, max: 58.415, rank 1
+adapt: 249, which: 4, min: 8.09054, median: 8.3459, max: 8.4907, rank 1 + wishart
+adapt: 249, which: 5, min: 20.3845, median: 21.1079, max: 21.3516, rank 2
+adapt: 249, which: 6, min: 7.31283, median: 7.54374, max: 7.67457, rank 2 + wishart
+adapt: 249, which: 7, min: 6.60535, median: 6.83126, max: 6.91824, rank 4
+adapt: 249, which: 8, min: 5.21141, median: 5.3763, max: 5.4709, rank 4 + wishart
+adapt: 249, which: 9, min: 2.4911, median: 2.53472, max: 2.60828, rank 8
+adapt: 249, which: 10, min: 3.19949, median: 3.30201, max: 3.36147, rank 8 + wishart
+```
+
+Build the tool to analyze the output with:
+```
+make bin/stansummary
+```
+
+Summarize results with:
+
+```
+bin/stansummary output.csv
+```

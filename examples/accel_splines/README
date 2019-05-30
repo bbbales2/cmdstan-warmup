@@ -1,0 +1,43 @@
+To run this code, the data must first be downloaded a model generated. To do this run:
+
+```
+Rscript generate.R
+```
+
+Then, to build the model, navigate to the root cmdstan directory and type:
+
+```
+make examples/accel_splines/accel_splines
+```
+
+Run it with the new adaptation using:
+
+```
+examples/accel_splines/accel_splines sample adapt experimental=1 which_adaptation=0 delta=0.99 algorithm=hmc metric=dense_e data file=examples/accel_splines/accel_splines.dat
+```
+
+The 'which_adaptation' argument can be used to force different adaptations. The available options are given on running with the switching adaptation (the numbers marked 'which'):
+
+```
+adapt: 249, which: 1, min: 556.095, median: 631.434, max: 925.455, dense
+adapt: 249, which: 2, min: 379.877, median: 437.583, max: 583.805, diagonal
+adapt: 249, which: 3, min: 97.6299, median: 116.866, max: 129.673, rank 1
+adapt: 249, which: 4, min: 443.089, median: 519.349, max: 763.963, rank 1 + wishart
+adapt: 249, which: 5, min: 86.5329, median: 106.074, max: 119.668, rank 2
+adapt: 249, which: 6, min: 359.275, median: 420.851, max: 619.062, rank 2 + wishart
+adapt: 249, which: 7, min: 83.0247, median: 94.7915, max: 107.935, rank 4
+adapt: 249, which: 8, min: 133.355, median: 155.371, max: 228.128, rank 4 + wishart
+adapt: 249, which: 9, min: 156.957, median: 169.997, max: 207.266, rank 8
+adapt: 249, which: 10, min: 65.2248, median: 72.4442, max: 104.956, rank 8 + wishart
+```
+
+Build the tool to analyze the output with:
+```
+make bin/stansummary
+```
+
+Summarize results with:
+
+```
+bin/stansummary output.csv
+```

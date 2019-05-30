@@ -1,0 +1,43 @@
+To run this code, the data must first be downloaded a model generated. To do this run:
+
+```
+Rscript generate.R
+```
+
+Then, to build the model, navigate to the root cmdstan directory and type:
+
+```
+make examples/diamonds/diamonds
+```
+
+Run it with the new adaptation using:
+
+```
+examples/diamonds/diamonds sample adapt experimental=1 which_adaptation=0 delta=0.8 algorithm=hmc metric=dense_e data file=examples/diamonds/diamonds.dat
+```
+
+The 'which_adaptation' argument can be used to force different adaptations. The available options are given on running with the switching adaptation (the numbers marked 'which'):
+
+```
+adapt: 249, which: 1, min: 7.54752, median: 7.68801, max: 7.80884, dense
+adapt: 249, which: 2, min: 724.624, median: 738.021, max: 749.662, diagonal
+adapt: 249, which: 3, min: 44.8921, median: 45.7219, max: 46.4431, rank 1
+adapt: 249, which: 4, min: 4.62706, median: 4.72309, max: 4.80883, rank 1 + wishart
+adapt: 249, which: 5, min: 6.02381, median: 6.13472, max: 6.23116, rank 2
+adapt: 249, which: 6, min: 4.1192, median: 4.20306, max: 4.27915, rank 2 + wishart
+adapt: 249, which: 7, min: 4.40311, median: 4.48308, max: 4.55396, rank 4
+adapt: 249, which: 8, min: 3.90017, median: 3.97624, max: 4.04963, rank 4 + wishart
+adapt: 249, which: 9, min: 2.70406, median: 2.75041, max: 2.79936, rank 8
+adapt: 249, which: 10, min: 3.33875, median: 3.4031, max: 3.46637, rank 8 + wishart
+```
+
+Build the tool to analyze the output with:
+```
+make bin/stansummary
+```
+
+Summarize results with:
+
+```
+bin/stansummary output.csv
+```

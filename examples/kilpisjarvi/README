@@ -1,0 +1,35 @@
+Data for this model is based on the measurements of the Finnish Meteorological Institute in 1952-2013.
+
+To run this code, navigate to the root cmdstan directory. Build the model with:
+
+```
+make examples/kilpisjarvi/kilpisjarvi
+```
+
+Run it with the new adaptation using:
+
+```
+examples/kilpisjarvi/kilpisjarvi sample adapt experimental=1 which_adaptation=0 delta=0.8 algorithm=hmc metric=dense_e data file=examples/kilpisjarvi/kilpisjarvi.dat
+```
+
+The 'which_adaptation' argument can be used to force different adaptations. The available options are given on running with the switching adaptation (the numbers marked 'which'):
+
+```
+adapt: 249, which: 1, min: 93.4631, median: 103.469, max: 107.531, dense
+adapt: 249, which: 2, min: 1167.35, median: 1292.32, max: 1343.04, diagonal
+adapt: 249, which: 3, min: 4.66008, median: 4.77966, max: 5.14343, rank 1
+adapt: 249, which: 4, min: 4.2753, median: 4.73042, max: 5.16958, rank 1 + wishart
+adapt: 249, which: 5, min: 4.67492, median: 4.9014, max: 5.1882, rank 2
+adapt: 249, which: 6, min: 4.28188, median: 4.73209, max: 5.16888, rank 2 + wishart
+```
+
+Build the tool to analyze the output with:
+```
+make bin/stansummary
+```
+
+Summarize results with:
+
+```
+bin/stansummary output.csv
+```

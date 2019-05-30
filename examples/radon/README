@@ -1,0 +1,45 @@
+The data for this model comes from https://github.com/stan-dev/example-models/blob/master/ARM/Ch.22/srrs2.dat. The model is adapted from https://mc-stan.org/users/documentation/case-studies/radon.html.
+
+To run this code, navigate to the root cmdstan directory. Build the model with:
+
+```
+make examples/radon/radon
+```
+
+Run it with the new adaptation using:
+
+```
+examples/radon/radon sample adapt experimental=1 which_adaptation=0 delta=0.8 algorithm=hmc metric=dense_e data file=examples/radon/radon.dat
+```
+
+Run it with the new adaptation requiring a diagonal metric using:
+
+```
+examples/radon/radon sample adapt experimental=1 which_adaptation=0 delta=0.8 algorithm=hmc metric=diag_e data file=examples/radon/radon.dat
+```
+
+The 'which_adaptation' argument can be used to force different adaptations. The available options are given on running with the switching adaptation (the numbers marked 'which'):
+
+```
+adapt: 249, which: 1, min: 81.1474, median: 81.6945, max: 82.2732, dense
+adapt: 249, which: 2, min: 4.2477, median: 4.25372, max: 4.27657, diagonal
+adapt: 249, which: 3, min: 2.13846, median: 2.19366, max: 2.24022, rank 1
+adapt: 249, which: 4, min: 4.32381, median: 4.35452, max: 4.38738, rank 1 + wishart
+adapt: 249, which: 5, min: 2.06395, median: 2.1383, max: 2.18537, rank 2
+adapt: 249, which: 6, min: 4.14332, median: 4.17276, max: 4.20427, rank 2 + wishart
+adapt: 249, which: 7, min: 2.02433, median: 2.10941, max: 2.14956, rank 4
+adapt: 249, which: 8, min: 4.02795, median: 4.05661, max: 4.08728, rank 4 + wishart
+adapt: 249, which: 9, min: 1.94554, median: 2.02579, max: 2.07769, rank 8
+adapt: 249, which: 10, min: 3.84899, median: 3.87641, max: 3.90577, rank 8 + wishart
+```
+
+Build the tool to analyze the output with:
+```
+make bin/stansummary
+```
+
+Summarize results with:
+
+```
+bin/stansummary output.csv
+```

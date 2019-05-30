@@ -1,0 +1,43 @@
+To run this code, the data must first be downloaded a model generated. To do this run:
+
+```
+Rscript generate.R
+```
+
+Then, to build the model, navigate to the root cmdstan directory and type:
+
+```
+make examples/accel_gp/accel_gp
+```
+
+Run it with the new adaptation using:
+
+```
+examples/accel_gp/accel_gp sample adapt experimental=1 which_adaptation=0 delta=0.99 algorithm=hmc metric=dense_e data file=examples/accel_gp/accel_gp.dat
+```
+
+The 'which_adaptation' argument can be used to force different adaptations. The available options are given on running with the switching adaptation (the numbers marked 'which'):
+
+```
+adapt: 249, which: 1, min: 403.673, median: 558.582, max: 721.414, dense
+adapt: 249, which: 2, min: 364.326, median: 423.667, max: 589.663, diagonal
+adapt: 249, which: 3, min: 94.1054, median: 125.02, max: 138.342, rank 1
+adapt: 249, which: 4, min: 430.174, median: 645.531, max: 845.844, rank 1 + wishart
+adapt: 249, which: 5, min: 80.6941, median: 109.527, max: 118.936, rank 2
+adapt: 249, which: 6, min: 336.957, median: 505.641, max: 662.47, rank 2 + wishart
+adapt: 249, which: 7, min: 63.5737, median: 89.5743, max: 110.069, rank 4
+adapt: 249, which: 8, min: 142.201, median: 213.753, max: 279.508, rank 4 + wishart
+adapt: 249, which: 9, min: 83.8553, median: 183.15, max: 246.605, rank 8
+adapt: 249, which: 10, min: 63.9722, median: 99.1685, max: 126.621, rank 8 + wishart
+```
+
+Build the tool to analyze the output with:
+```
+make bin/stansummary
+```
+
+Summarize results with:
+
+```
+bin/stansummary output.csv
+```
